@@ -24,14 +24,14 @@ class Student:
     # Задание №3. Метод посчета средней оценки за дз.
     def avarage_score(self):
         val = self.grades.values()
-        avarage = sum(val) / len(val)
+        avarage = sum(sum(val, [])) / len(sum(val, []))
         return avarage
 
     # Задание №3. Студенты + средняя оценка за дз
     def __str__(self):
         name_surname_grade = f'Имя: {self.name}\nФамилия: {self.surname}' \
-                             f"\nСредняя оценка за домашние задания: {self.avarage_score}" \
-                             f"\nКурсы в процессе изучения:{''.join(self.courses_in_progress)}" \
+                             f"\nСредняя оценка за домашние задания: {round(self.avarage_score(), 1)}" \
+                             f"\nКурсы в процессе изучения:{', '.join(self.courses_in_progress)}" \
                              f"\nЗавершенные курсы:{''.join(self.finished_courses)}"
         return name_surname_grade
 
@@ -43,11 +43,13 @@ class Student:
             return
         return self.avarage_score() < other.avarage_score()
 
+
 class Mentor:
     def __init__(self, name, surname):
         self.name = name
         self.surname = surname
         self.courses_attached = []
+
 
 # Задание №1.
 class Lecturer(Mentor):
@@ -57,13 +59,16 @@ class Lecturer(Mentor):
 
     # Задание №3. Метод посчета средней оценки за лекции.
     def avarage_score(self):
-        values = self.grades.values()
-        avarage = sum(values) / len(values)
+        val = self.grades.values()
+        avarage = sum(sum(val, [])) / len(sum(val, []))
         return avarage
 
         # Задание №3. Лекторы + средняя оценка за лекции
+
     def __str__(self):
-        name_surname_grade = f'Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за лекции: {self.avarage_score}'
+        name_surname_grade = f'Имя: {self.name}' \
+                             f'\nФамилия: {self.surname}' \
+                             f'\nСредняя оценка за лекции: {round(self.avarage_score(), 1)}'
         return name_surname_grade
 
     # Задание 3.2. Реализуйте возможность сравнивать (через операторы сравнения) между собой лекторов
@@ -98,55 +103,96 @@ class Reviewer(Mentor):
         name_surname = f'Имя: {self.name}\nФамилия: {self.surname}'
         return name_surname
 
-best_student = Student('Ruoy', 'Eman', 'male')
-best_student.grades = {'Python': 10, 'JS': 5, 'Swift': 6}
-best_student.courses_in_progress = ['Python']
 
-best_student.add_courses('Django')
-print(best_student.finished_courses)
+lecturer_1 = Lecturer('Some', 'Buddy')
+lecturer_1.courses_attached += ['Python']
 
-non_best_student = Student('Harry', 'Jhonson', 'male')
-non_best_student.grades = {'Python': 3, 'JS': 4, 'Swift': 2}
-non_best_student.courses_in_progress = ['JS']
+lecturer_2 = Lecturer('Herold', 'Wood')
+lecturer_2.courses_attached += ['JS']
 
-non_best_student.add_courses('Git')
-print(non_best_student.finished_courses)
+lecturer_3 = Lecturer('Steave', 'Jobs')
+lecturer_3.courses_attached += ['Django']
 
-lector_1 = Lecturer('Eugeni', 'Borisov')
-lector_1.courses_attached = ['Python']
+student_1 = Student('Ruoy', 'Eman', 'male')
+student_1.courses_in_progress += ['Python', 'JS', 'Django']
+student_1.finished_courses += ['Азбука']
+student_1.rate_lecturer(lecturer_1, 'Python', 5)
+student_1.rate_lecturer(lecturer_2, 'JS', 7)
+student_1.rate_lecturer(lecturer_3, 'Django', 3)
 
-lector_2 = Lecturer('Vitaly', 'Morozov')
-lector_2.courses_attached = ['JS']
+student_2 = Student('Nikola', 'Tesla', 'male')
+student_2.courses_in_progress += ['Python', 'JS', 'Django']
+student_2.finished_courses += ['Азбука']
+student_2.rate_lecturer(lecturer_1, 'Python', 2)
+student_2.rate_lecturer(lecturer_2, 'JS', 4)
+student_2.rate_lecturer(lecturer_3, 'Django', 9)
 
-best_student.rate_lecturer(lector_1, 'Python', 7)
-print(lector_1.grades)
+reviewer_1 = Reviewer('Donald', 'Trump')
+reviewer_1.courses_attached += ['Python']
+reviewer_1.rate_hw(student_1, 'Python', 7)
+reviewer_1.rate_hw(student_2, 'Python', 3)
 
-non_best_student.rate_lecturer(lector_2, 'JS', 4)
-print(lector_2.grades)
+reviewer_2 = Reviewer('Albert', 'Enshtein')
+reviewer_2.courses_attached += ['JS', 'Django']
+reviewer_2.rate_hw(student_1, 'JS', 9)
+reviewer_2.rate_hw(student_1, 'Django', 3)
+reviewer_2.rate_hw(student_2, 'JS', 8)
+reviewer_2.rate_hw(student_2, 'Django', 7.6)
 
-print(best_student < non_best_student)
+# функция принимает на вход список студентов и название курсов. список студентов создаем сами.
+# Помещяем в список экземпляры класса студентов.
+# два цикла
+# первый перебирает список студентов
+# второй перебирает словрик оценок
+# потом посчитать среднюю
 
-print(best_student)
-#print(lector_2)
+student_list = [student_1, student_2]
 
-#print(lector_1 < lector_2)
-
-reviewer_1 = Reviewer('Ivan', 'Belov')
-reviewer_1.courses_attached = ['Python']
-
-reviewer_2 = Reviewer('Kirill', 'Ivanov')
-reviewer_2.courses_attached = ['JS']
-
-#reviewer_1.rate_hw(best_student, 'Python', 9)
-#print(reviewer_1.rate_hw)
-
-
-
-
-
-
-#best_student.courses_in_progress += ['Python']
-#cool_mentor = Mentor('Some', 'Buddy')
-#cool_mentor.courses_attached += ['Python']
+def all_student_score():
+    score_py_student = []
+    score_js_student = []
+    score_dj_student = []
+    for student in student_list:
+        for subject, score in student.grades.items():
+            if subject == 'Python':
+                score_py_student.append(score)
+            if subject == 'JS':
+                score_js_student.append(score)
+            if subject == 'Django':
+                score_dj_student.append(score)
+    middle_py_student = sum(sum(score_py_student, [])) / len(sum(score_py_student, []))
+    middle_js_student = sum(sum(score_js_student, [])) / len(sum(score_js_student, []))
+    middle_dj_student = sum(sum(score_dj_student, [])) / len(sum(score_dj_student, []))
+    return f'Средняя оценка студентов за Python: {middle_py_student} \
+      \nСредняя оценка студентов за JS: {middle_js_student} \
+      \nСредняя оценка студентов за Django: {middle_dj_student}'
 
 
+lecturer_list = [lecturer_1, lecturer_2, lecturer_3]
+
+def all_lecturer_score():
+    score_py_lecturer = []
+    score_js_lecturer = []
+    score_dj_lecturer = []
+    for lecturer in lecturer_list:
+        for subject, score in lecturer.grades.items():
+            if subject == 'Python':
+                score_py_lecturer.append(score)
+            if subject == 'JS':
+                score_js_lecturer.append(score)
+            if subject == 'Django':
+                score_dj_lecturer.append(score)
+    middle_py_lecturer = sum(sum(score_py_lecturer, [])) / len(sum(score_py_lecturer, []))
+    middle_js_lecturer = sum(sum(score_js_lecturer, [])) / len(sum(score_js_lecturer, []))
+    middle_dj_lecturer = sum(sum(score_dj_lecturer, [])) / len(sum(score_dj_lecturer, []))
+    return f'Средняя оценка лекторов за Python: {middle_py_lecturer} \
+      \nСредняя оценка лекторов за JS: {middle_js_lecturer} \
+      \nСредняя оценка лекторов за Django: {middle_dj_lecturer}'
+
+print(student_1)
+print(lecturer_1)
+print(reviewer_1)
+print(all_student_score())
+print(all_lecturer_score())
+
+#Готово! Ура-Ура
